@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yi Hou — UCAS</title>
+<link rel="icon" type="image/png" href="avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15px/1.7 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+
+  nav { position:sticky; top:0; background:rgba(255,255,255,.96); border-bottom:1px solid var(--line); z-index:10; }
+  nav .inner { max-width:1080px; margin:0 auto; padding:0 28px; display:flex; gap:26px; height:52px; align-items:center; }
+  nav a { font-size:13.5px; color:#3d4451; }
+  nav a:hover { color:var(--navy); }
+  nav .me { font-weight:700; color:var(--ink); margin-right:6px; }
+
+  .container { max-width:1080px; margin:0 auto; padding:44px 28px 56px; display:grid; grid-template-columns:248px minmax(0,1fr); gap:52px; align-items:start; }
+
+  aside { position:sticky; top:76px; }
+  .avatar { width:112px; height:112px; border-radius:50%; overflow:hidden; }
+  aside h1 { font-size:24px; margin:16px 0 1px; letter-spacing:.2px; }
+  aside .cn { color:var(--mut); font-size:14px; margin:0 0 8px; }
+  aside .role { font-size:13.5px; color:#3d4451; margin:0 0 12px; }
+  aside .side-bio { font-size:13px; color:var(--mut); line-height:1.6; margin:0 0 16px; }
+  aside ul { list-style:none; margin:0; padding:0; }
+  aside li { display:flex; align-items:center; gap:8px; font-size:13px; color:#3d4451; margin-bottom:7px; }
+  aside li svg { flex:none; color:var(--faint); }
+
+  main { min-width:0; }
+  main p { margin:0 0 14px; }
+  h2 { font-size:17px; color:var(--navy); margin:38px 0 14px; padding-bottom:6px; border-bottom:1px solid var(--line); }
+  h2:first-of-type { margin-top:6px; }
+
+  ul.news { margin:0; padding-left:20px; }
+  ul.news li { margin-bottom:7px; font-size:14.5px; }
+  ul.news .date { color:var(--faint); font-variant-numeric:tabular-nums; margin-right:8px; }
+
+  .proj { margin:0 0 16px; }
+  .proj b { font-size:15px; }
+  .proj .d { color:#3d4451; font-size:14px; margin:1px 0 2px; }
+  .proj .l { font-size:13px; }
+
+  .reports { display:grid; grid-template-columns:minmax(0,1fr) 312px; gap:20px; align-items:start; }
+  ol.rlist { margin:0; padding-left:20px; }
+  ol.rlist li { margin-bottom:9px; font-size:14px; cursor:pointer; }
+  ol.rlist li:hover { color:var(--navy); }
+  ol.rlist li.active { color:var(--navy); font-weight:600; }
+  ol.rlist .meta { color:var(--faint); font-size:11.5px; letter-spacing:.5px; text-transform:uppercase; margin-top:1px; font-weight:400; }
+  .panel { border:1px solid var(--line); border-radius:8px; background:#fafbfc; padding:12px; }
+  .panel img { width:100%; display:block; border:1px solid #e8ecf1; border-radius:4px; background:#fff; }
+  .panel .cap { font-size:12.5px; color:#3d4451; margin-top:9px; line-height:1.55; }
+  .panel .cap b { display:block; color:var(--navy); margin-bottom:2px; }
+  .btn { display:inline-block; margin-top:9px; font-size:12.5px; padding:6px 12px; background:var(--navy); color:#fff; border-radius:5px; }
+  .btn:hover { background:#123255; text-decoration:none; }
+
+  .cv { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .cv .item { border:1px solid var(--line); border-radius:8px; padding:10px; }
+  .cv img { width:100%; height:140px; object-fit:cover; object-position:top; border-radius:5px; border:1px solid #eceff3; display:block; }
+  .cv .cap { font-size:13px; margin-top:9px; font-weight:600; }
+  .cv .cap span { float:right; color:var(--faint); font-weight:400; font-size:11.5px; }
+
+  footer { border-top:1px solid var(--line); margin-top:26px; padding:18px 0 0; font-size:12.5px; color:var(--faint); display:flex; justify-content:space-between; }
+  footer a { color:var(--faint); }
+</style>
+</head>
+<body>
+
+<nav><div class="inner">
+  <a class="me" href="#top">Yi Hou</a>
+  <a href="#about">About</a>
+  <a href="#news">News</a>
+  <a href="#projects">Projects</a>
+  <a href="#reports">Reports</a>
+  <a href="#other">Other</a>
+  <a href="#cv">CV</a>
+</div></nav>
+
+<div class="container" id="top">
+
+  <aside>
+    <div class="avatar"><img src="avatar.png" alt="Yi Hou" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+    <h1>Yi Hou</h1>
+    <p class="cn">厚熠</p>
+    <p class="role">AI undergraduate<br>University of Chinese Academy of Sciences</p>
+    <p class="side-bio">Interests: LLM training systems — GPU kernels, distributed training, post-training.</p>
+    <ul>
+      <li><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Beijing, China</li>
+      <li><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><a href="mailto:houyi25@mails.ucas.ac.cn">houyi25@mails.ucas.ac.cn</a></li>
+      <li><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg><a href="https://github.com/Helios-YQH">github.com/Helios-YQH</a></li>
+    </ul>
+  </aside>
+
+  <main>
+    <section id="about">
+      <p>Welcome — I'm Yi Hou (厚熠), a second-year Artificial Intelligence undergraduate at the University of Chinese Academy of Sciences, Beijing.</p>
+      <p>My path into deep learning started with computer vision: real-time hand-gesture interfaces with MediaPipe, 3D reconstruction with COLMAP and 3D Gaussian Splatting, and a from-scratch reproduction of StraightPCF for point-cloud denoising that placed in the national top 100 of the 6th Jittor AI Challenge.</p>
+      <p>From there I moved down the stack — re-implementing diffusion models from scratch (UNet vs. DiT, ε-prediction vs. rectified flow) — and then into the full language-modeling stack: byte-level BPE, a decoder-only Transformer, Triton attention kernels, distributed training (DDP / ZeRO-1 / FSDP), a Common Crawl filtering pipeline, and post-training with SFT / DPO / GRPO. The work is public as <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>: four projects, five technical reports, every number reproducible from raw run records.</p>
+    </section>
+
+    <section id="news">
+      <h2>News</h2>
+      <ul class="news">
+        <li><span class="date">2026.10</span>Technical reports v1.0 released — five PDFs in the llm-from-scratch monorepo.</li>
+        <li><span class="date">2026.04–07</span>National top 100 in the 6th Jittor AI Challenge (solo, point-cloud denoising).</li>
+        <li><span class="date">2025.09</span>Started B.Eng. in Artificial Intelligence at UCAS.</li>
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>Selected Projects</h2>
+      <div class="proj"><b>LLM from Scratch</b><div class="d">BPE → Transformer → GPU systems → data pipeline → post-training, as one monorepo; 5 technical reports built on controlled experiments.</div><div class="l"><a href="https://github.com/Helios-YQH/llm-from-scratch">github.com/Helios-YQH/llm-from-scratch ↗</a></div></div>
+      <div class="proj"><b>Diffusion from Scratch</b><div class="d">A controlled study of backbones and objectives — rectified flow beats ε-prediction at every budget (best MNIST FID 0.88), with sampler and training-systems analysis.</div><div class="l"><a href="https://github.com/Helios-YQH/diffusion-from-scratch">github.com/Helios-YQH/diffusion-from-scratch ↗</a></div></div>
+      <div class="proj"><b>Point Cloud Denoising</b><div class="d">StraightPCF (CVPR 2024) re-implemented in Jittor — Chamfer distance −51%, P2S error −67%; national top 100, 6th Jittor AI Challenge.</div><div class="l"><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">github.com/Helios-YQH/jittor-competition-point-cloud ↗</a></div></div>
+    </section>
+
+    <section id="reports">
+      <h2>Technical Reports</h2>
+      <div class="reports">
+        <ol class="rlist" id="rlist">
+          <li data-i="0">A Transformer Language Model From Scratch: Implementation and Controlled Experiments</li>
+          <li data-i="1" class="active"><b>Where the Time and Memory Go: Systems Optimizations for Transformer Training</b><div class="meta">Previewing</div></li>
+          <li data-i="2">From Crawl to Corpus: Building, Auditing, and Evaluating a Common Crawl Filtering Pipeline</li>
+          <li data-i="3">Estimator Choices and Reward Quality in GRPO: A Controlled Study on the GSM8K Benchmark</li>
+          <li data-i="4">Instruction Tuning and Preference Optimization: Capability Trade-offs and Judge Dependence</li>
+        </ol>
+        <div class="panel">
+          <img id="preview-img" src="report-2.png" alt="report preview">
+          <div class="cap"><b id="preview-title">Where the Time and Memory Go</b><span id="preview-desc">Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.</span></div>
+          <a class="btn" id="preview-link" href="https://github.com/Helios-YQH/llm-from-scratch/releases/download/v1.0/training-systems-tech-report.pdf">Open PDF ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="other">
+      <h2>Other Projects</h2>
+      <div class="proj"><b>lab-report</b><div class="d">An agent skill (Claude Code) that automates the full loop from photos of handwritten lab records to a finished physics-lab report — verified transcription, uncertainty-corrected calculations and plots, and a Typst-compiled PDF. Open source.</div><div class="l"><a href="https://github.com/Helios-YQH/lab-report">github.com/Helios-YQH/lab-report ↗</a></div></div>
+      <div class="proj"><b>ZhiyanNavigator</b><div class="d">Backend for an LLM-powered paper-learning assistant built for the 2026 China International College Students' Innovation Competition — paper ingestion, proficiency assessment, study roadmap, card-by-card explanations, and self-check quizzes.</div></div>
+    </section>
+
+    <section id="cv">
+      <h2>CV</h2>
+      <div class="cv">
+        <div class="item"><a href="resume-en.pdf"><img src="cv-en.png" alt="CV English"></a><div class="cap"><span>1 page</span><a href="resume-en.pdf">CV — English (PDF) →</a></div></div>
+        <div class="item"><a href="resume-zh.pdf"><img src="cv-zh.png" alt="简历中文"></a><div class="cap"><span>1 页</span><a href="resume-zh.pdf">简历 — 中文 (PDF) →</a></div></div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Yi Hou · University of Chinese Academy of Sciences · Beijing</span>
+      <span><a href="mailto:houyi25@mails.ucas.ac.cn">Email</a> · <a href="https://github.com/Helios-YQH">GitHub</a></span>
+    </footer>
+  </main>
+
+</div>
+
+<script>
+const REPORTS = [
+  { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; controlled ablations, including a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-tech-report.pdf" },
+  { t:"Where the Time and Memory Go", d:"Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.", img:"report-2.png", pdf:"training-systems-tech-report.pdf" },
+  { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; a paired ablation measures −0.27 nats validation loss (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-tech-report.pdf" },
+  { t:"Estimator Choices and Reward Quality in GRPO", d:"Prompt design is the first-order variable at 1B scale; RL retains ~90–105% of its gains under a 10%-flip verifier where test-time selection collapses to 57%.", img:"report-4.png", pdf:"grpo-tech-report.pdf" },
+  { t:"Instruction Tuning and Preference Optimization", d:"AlpacaEval win rate for the same model swings from 3.8% to 33.2% across four judges; capability trade-offs and safety measured.", img:"report-5.png", pdf:"sft-dpo-tech-report.pdf" }
+];
+const REL = "https://github.com/Helios-YQH/llm-from-scratch/releases/download/v1.0/";
+document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click", () => {
+  const i = +li.dataset.i, r = REPORTS[i];
+  document.querySelectorAll("#rlist li").forEach(x => { x.classList.remove("active"); const m = x.querySelector(".meta"); if (m) m.remove(); });
+  li.classList.add("active");
+  const meta = document.createElement("div"); meta.className = "meta"; meta.textContent = "Previewing";
+  li.appendChild(meta);
+  document.getElementById("preview-img").src = r.img;
+  document.getElementById("preview-title").textContent = r.t;
+  document.getElementById("preview-desc").textContent = r.d;
+  document.getElementById("preview-link").href = REL + r.pdf;
+}));
+</script>
+</body>
+</html>
