@@ -56,6 +56,10 @@
   .panel .cap b { display:block; color:var(--navy); margin-bottom:2px; }
   .btn { display:inline-block; margin-top:9px; font-size:12.5px; padding:6px 12px; background:var(--navy); color:#fff; border-radius:5px; }
   .btn:hover { background:#123255; text-decoration:none; }
+  .btn.ghost { background:#fff; color:var(--navy); border:1px solid var(--navy); }
+  .btn.ghost:hover { background:#eef3f9; text-decoration:none; }
+  .panel .actions { display:flex; gap:8px; }
+  .panel a.img-link { display:block; }
 
   .cv { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   .cv .item { border:1px solid var(--line); border-radius:8px; padding:10px; }
@@ -128,9 +132,12 @@
           <li data-i="4">Instruction Tuning and Preference Optimization: Capability Trade-offs and Judge Dependence</li>
         </ol>
         <div class="panel">
-          <img id="preview-img" src="report-2.png" alt="report preview">
+          <a class="img-link" id="preview-view" href="training-systems-report.pdf" target="_blank"><img id="preview-img" src="report-2.png" alt="report preview"></a>
           <div class="cap"><b id="preview-title">Where the Time and Memory Go</b><span id="preview-desc">Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.</span></div>
-          <a class="btn" id="preview-link" href="https://github.com/Helios-YQH/llm-from-scratch/releases/download/v1.0/training-systems-tech-report.pdf">Open PDF ↗</a>
+          <div class="actions">
+            <a class="btn" id="preview-open" href="training-systems-report.pdf" target="_blank">View PDF ↗</a>
+            <a class="btn ghost" id="preview-download" href="training-systems-report.pdf" download>Download</a>
+          </div>
         </div>
       </div>
     </section>
@@ -159,13 +166,12 @@
 
 <script>
 const REPORTS = [
-  { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; controlled ablations, including a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-tech-report.pdf" },
-  { t:"Where the Time and Memory Go", d:"Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.", img:"report-2.png", pdf:"training-systems-tech-report.pdf" },
-  { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; a paired ablation measures −0.27 nats validation loss (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-tech-report.pdf" },
-  { t:"Estimator Choices and Reward Quality in GRPO", d:"Prompt design is the first-order variable at 1B scale; RL retains ~90–105% of its gains under a 10%-flip verifier where test-time selection collapses to 57%.", img:"report-4.png", pdf:"grpo-tech-report.pdf" },
-  { t:"Instruction Tuning and Preference Optimization", d:"AlpacaEval win rate for the same model swings from 3.8% to 33.2% across four judges; capability trade-offs and safety measured.", img:"report-5.png", pdf:"sft-dpo-tech-report.pdf" }
+  { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; controlled ablations, including a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-report.pdf" },
+  { t:"Where the Time and Memory Go", d:"Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.", img:"report-2.png", pdf:"training-systems-report.pdf" },
+  { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; a paired ablation measures −0.27 nats validation loss (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-report.pdf" },
+  { t:"Estimator Choices and Reward Quality in GRPO", d:"Prompt design is the first-order variable at 1B scale; RL retains ~90–105% of its gains under a 10%-flip verifier where test-time selection collapses to 57%.", img:"report-4.png", pdf:"grpo-report.pdf" },
+  { t:"Instruction Tuning and Preference Optimization", d:"AlpacaEval win rate for the same model swings from 3.8% to 33.2% across four judges; capability trade-offs and safety measured.", img:"report-5.png", pdf:"sft-dpo-report.pdf" }
 ];
-const REL = "https://github.com/Helios-YQH/llm-from-scratch/releases/download/v1.0/";
 document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click", () => {
   const i = +li.dataset.i, r = REPORTS[i];
   document.querySelectorAll("#rlist li").forEach(x => { x.classList.remove("active"); const m = x.querySelector(".meta"); if (m) m.remove(); });
@@ -175,7 +181,9 @@ document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click"
   document.getElementById("preview-img").src = r.img;
   document.getElementById("preview-title").textContent = r.t;
   document.getElementById("preview-desc").textContent = r.d;
-  document.getElementById("preview-link").href = REL + r.pdf;
+  document.getElementById("preview-view").href = r.pdf;
+  document.getElementById("preview-open").href = r.pdf;
+  document.getElementById("preview-download").href = r.pdf;
 }));
 </script>
 </body>
