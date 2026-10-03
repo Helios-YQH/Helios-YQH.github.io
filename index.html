@@ -69,6 +69,20 @@
 
   footer { border-top:1px solid var(--line); margin-top:26px; padding:18px 0 0; font-size:12.5px; color:var(--faint); display:flex; justify-content:space-between; }
   footer a { color:var(--faint); }
+
+  @media (max-width: 720px) {
+    nav .inner { gap:16px; padding:0 16px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    nav a { white-space:nowrap; }
+    .container { grid-template-columns:1fr; gap:22px; padding:26px 18px 40px; }
+    aside { position:static; }
+    aside .avatar { width:84px; height:84px; }
+    aside h1 { font-size:21px; margin-top:12px; }
+    .reports { grid-template-columns:1fr; }
+    .reports .panel { order:-1; }
+    .cv { grid-template-columns:1fr; }
+    h2 { margin-top:30px; }
+    footer { flex-direction:column; gap:6px; }
+  }
 </style>
 </head>
 <body>
@@ -128,7 +142,7 @@
           <li data-i="0">A Transformer Language Model From Scratch: Implementation and Controlled Experiments</li>
           <li data-i="1" class="active">Where the Time and Memory Go: Systems Optimizations for Transformer Training<div class="meta">Previewing</div></li>
           <li data-i="2">From Crawl to Corpus: Building, Auditing, and Evaluating a Common Crawl Filtering Pipeline</li>
-          <li data-i="3">Estimator Choices and Reward Quality in GRPO: A Controlled Study on the GSM8K Benchmark</li>
+          <li data-i="3">Prompt Dominance and Asymmetric Verifier Costs: Empirical Ablations of GRPO at 1B Scale on GSM8K</li>
           <li data-i="4">Instruction Tuning and Preference Optimization: Capability Trade-offs and Judge Dependence</li>
         </ol>
         <div class="panel">
@@ -169,8 +183,8 @@ const REPORTS = [
   { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; controlled ablations, including a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-report.pdf" },
   { t:"Where the Time and Memory Go", d:"Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.", img:"report-2.png", pdf:"training-systems-report.pdf" },
   { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; a paired ablation measures −0.27 nats validation loss (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-report.pdf" },
-  { t:"Estimator Choices and Reward Quality in GRPO", d:"Prompt design is the first-order variable at 1B scale; RL retains ~90–105% of its gains under a 10%-flip verifier where test-time selection collapses to 57%.", img:"report-4.png", pdf:"grpo-report.pdf" },
-  { t:"Instruction Tuning and Preference Optimization", d:"AlpacaEval win rate for the same model swings from 3.8% to 33.2% across four judges; capability trade-offs and safety measured.", img:"report-5.png", pdf:"sft-dpo-report.pdf" }
+  { t:"Prompt Dominance and Asymmetric Verifier Costs in GRPO", d:"Prompt design, not the estimator, is the first-order variable at 1B scale; a 10%-flip verifier keeps 91%/106% of RL's attainable gain across two seeds where best-of-32 selection keeps only 57%.", img:"report-4.png", pdf:"grpo-report.pdf" },
+  { t:"Instruction Tuning and Preference Optimization", d:"The same three models span 3.8–9.4% AlpacaEval win rate under three frontier judges but 26–33% under a local 8B judge; MMLU “gains” are mostly answer-format change.", img:"report-5.png", pdf:"sft-dpo-report.pdf" }
 ];
 document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click", () => {
   const i = +li.dataset.i, r = REPORTS[i];
