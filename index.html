@@ -44,6 +44,13 @@
   .proj .d { color:#3d4451; font-size:14px; margin:1px 0 2px; }
   .proj .l { font-size:13px; }
 
+  .results-strip { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+  .rcard { border:1px solid var(--line); border-radius:8px; background:#fafbfc; padding:10px; display:flex; flex-direction:column; }
+  .rcard img { width:100%; display:block; background:#fff; border:1px solid #e8ecf1; border-radius:4px; }
+  .rcard .cap { font-size:12.5px; color:#3d4451; margin-top:8px; line-height:1.5; flex:1; }
+  .rcard .cap b { color:var(--navy); }
+  .rcard .src { font-size:11.5px; margin-top:6px; }
+
   .reports { display:grid; grid-template-columns:minmax(0,1fr) 312px; gap:20px; align-items:start; }
   ol.rlist { margin:0; padding-left:20px; }
   ol.rlist li { margin-bottom:9px; font-size:14px; cursor:pointer; }
@@ -79,6 +86,7 @@
     aside h1 { font-size:21px; margin-top:12px; }
     .reports { grid-template-columns:1fr; }
     .reports .panel { order:-1; }
+    .results-strip { grid-template-columns:1fr; }
     .cv { grid-template-columns:1fr; }
     h2 { margin-top:30px; }
     footer { flex-direction:column; gap:6px; }
@@ -90,6 +98,7 @@
 <nav><div class="inner">
   <a class="me" href="#top">Yi Hou</a>
   <a href="#about">About</a>
+  <a href="#results">Results</a>
   <a href="#news">News</a>
   <a href="#projects">Projects</a>
   <a href="#reports">Reports</a>
@@ -114,25 +123,46 @@
 
   <main>
     <section id="about">
-      <p>Welcome — I'm Yi Hou (厚熠), a second-year Artificial Intelligence undergraduate at the University of Chinese Academy of Sciences, Beijing.</p>
-      <p>My path into deep learning started with computer vision: real-time hand-gesture interfaces with MediaPipe, 3D reconstruction with COLMAP and 3D Gaussian Splatting, and a from-scratch reproduction of StraightPCF for point-cloud denoising that placed in the national top 100 of the 6th Jittor AI Challenge.</p>
-      <p>From there I moved down the stack — re-implementing diffusion models from scratch (UNet vs. DiT, ε-prediction vs. rectified flow) — and then into the full language-modeling stack: byte-level BPE, a decoder-only Transformer, Triton attention kernels, distributed training (DDP / ZeRO-1 / FSDP), a Common Crawl filtering pipeline, and post-training with SFT / DPO / GRPO. The work is public as <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>: four projects, five technical reports, every number reproducible from raw run records.</p>
+      <p>I'm Yi Hou (厚熠), a second-year Artificial Intelligence undergraduate at UCAS. I build language-model systems from scratch and report what the measurements say.</p>
+      <p>I came in through computer vision — a solo top-100 finish (of 3,668 registrations) in the 6th Jittor AI Challenge — then went down the stack through diffusion models, and now work across the full LLM pipeline: byte-level BPE, a decoder-only Transformer, Triton attention kernels, DDP / ZeRO-1 / FSDP, a Common Crawl filtering pipeline, and post-training with SFT / DPO / GRPO.</p>
+      <p>It's all public as <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a> — four projects, five technical reports — and I only publish numbers I can regenerate from the raw run logs.</p>
+    </section>
+
+    <section id="results">
+      <h2>Selected Results</h2>
+      <div class="results-strip">
+        <div class="rcard">
+          <img src="key-attention.png" alt="FlashAttention-2 vs naive attention timing across sequence length">
+          <div class="cap"><b>5.7× faster attention at 64K context.</b> Hand-written Triton FlashAttention-2 vs. naive attention (bf16) — and fp32 64K contexts run where naive OOMs.</div>
+          <div class="src"><a href="training-systems-report.pdf">→ Where the Time and Memory Go</a></div>
+        </div>
+        <div class="rcard">
+          <img src="key-verifier.png" alt="Fraction of attainable gain kept under verifier noise">
+          <div class="cap"><b>A 10%-wrong verifier costs RL almost nothing.</b> GRPO keeps 91–106% of its attainable gain (two seeds); best-of-32 selection keeps only 57%.</div>
+          <div class="src"><a href="grpo-report.pdf">→ Prompt Dominance and Asymmetric Verifier Costs</a></div>
+        </div>
+        <div class="rcard">
+          <img src="key-judge.png" alt="AlpacaEval win rate under three frontier judges">
+          <div class="cap"><b>The judge outweighs the model.</b> AlpacaEval win rate for the same three models spans 3.8–9.4% across frontier judges — and 26–33% under a local 8B judge.</div>
+          <div class="src"><a href="sft-dpo-report.pdf">→ Instruction Tuning and Preference Optimization</a></div>
+        </div>
+      </div>
     </section>
 
     <section id="news">
       <h2>News</h2>
       <ul class="news">
         <li><span class="date">2026.10</span>Technical reports v1.0 released — five PDFs in the llm-from-scratch monorepo.</li>
-        <li><span class="date">2026.04–07</span>National top 100 in the 6th Jittor AI Challenge (solo, point-cloud denoising).</li>
+        <li><span class="date">2026.04–07</span>Top 100 of 3,668 registrations in the 6th Jittor AI Challenge (solo, point-cloud denoising).</li>
         <li><span class="date">2025.09</span>Started B.Eng. in Artificial Intelligence at UCAS.</li>
       </ul>
     </section>
 
     <section id="projects">
       <h2>Selected Projects</h2>
-      <div class="proj"><b>LLM from Scratch</b><div class="d">BPE → Transformer → GPU systems → data pipeline → post-training, as one monorepo; 5 technical reports built on controlled experiments.</div><div class="l"><a href="https://github.com/Helios-YQH/llm-from-scratch">github.com/Helios-YQH/llm-from-scratch ↗</a></div></div>
-      <div class="proj"><b>Diffusion from Scratch</b><div class="d">A controlled study of backbones and objectives — rectified flow beats ε-prediction at every budget (best MNIST FID 0.88), with sampler and training-systems analysis.</div><div class="l"><a href="https://github.com/Helios-YQH/diffusion-from-scratch">github.com/Helios-YQH/diffusion-from-scratch ↗</a></div></div>
-      <div class="proj"><b>Point Cloud Denoising</b><div class="d">StraightPCF (CVPR 2024) re-implemented in Jittor — Chamfer distance −51%, P2S error −67%; national top 100, 6th Jittor AI Challenge.</div><div class="l"><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">github.com/Helios-YQH/jittor-competition-point-cloud ↗</a></div></div>
+      <div class="proj"><b>LLM from Scratch</b><div class="d">The full LLM stack in one monorepo — BPE → Transformer → Triton kernels → DDP / ZeRO-1 / FSDP → Common Crawl pipeline → SFT / DPO / GRPO. Five technical reports.</div><div class="l"><a href="https://github.com/Helios-YQH/llm-from-scratch">github.com/Helios-YQH/llm-from-scratch ↗</a></div></div>
+      <div class="proj"><b>Diffusion from Scratch</b><div class="d">UNet vs. DiT and ε-prediction vs. rectified flow, all measured: rectified flow won at every budget (best MNIST FID 0.88), and DDIM at 50 steps matches the 1,000-step ancestral FID within 0.8% at ~20× the speed.</div><div class="l"><a href="https://github.com/Helios-YQH/diffusion-from-scratch">github.com/Helios-YQH/diffusion-from-scratch ↗</a></div></div>
+      <div class="proj"><b>Point Cloud Denoising</b><div class="d">StraightPCF (CVPR 2024), solo re-implementation in Jittor — −51% Chamfer distance and −67% P2S error versus the noisy input; top 100 of 3,668 in the 6th Jittor AI Challenge.</div><div class="l"><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">github.com/Helios-YQH/jittor-competition-point-cloud ↗</a></div></div>
     </section>
 
     <section id="reports">
@@ -147,7 +177,7 @@
         </ol>
         <div class="panel">
           <a class="img-link" id="preview-view" href="training-systems-report.pdf" target="_blank"><img id="preview-img" src="report-2.png" alt="report preview"></a>
-          <div class="cap"><b id="preview-title">Where the Time and Memory Go</b><span id="preview-desc">Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.</span></div>
+          <div class="cap"><b id="preview-title">Where the Time and Memory Go</b><span id="preview-desc">5.7× attention speedup at 64K context (Triton FA2); −43% memory from a from-scratch FSDP; Nsight profiles across 128M–3.4B-parameter models.</span></div>
           <div class="actions">
             <a class="btn" id="preview-open" href="training-systems-report.pdf" target="_blank">View PDF ↗</a>
             <a class="btn ghost" id="preview-download" href="training-systems-report.pdf" download>Download</a>
@@ -180,9 +210,9 @@
 
 <script>
 const REPORTS = [
-  { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; controlled ablations, including a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-report.pdf" },
-  { t:"Where the Time and Memory Go", d:"Profiling with Nsight Systems, mixed precision, Triton FlashAttention-2, and from-scratch DDP / ZeRO-1 / FSDP.", img:"report-2.png", pdf:"training-systems-report.pdf" },
-  { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; a paired ablation measures −0.27 nats validation loss (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-report.pdf" },
+  { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; ablations include a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-report.pdf" },
+  { t:"Where the Time and Memory Go", d:"5.7× attention speedup at 64K context (Triton FA2); −43% memory from a from-scratch FSDP; Nsight profiles across 128M–3.4B-parameter models.", img:"report-2.png", pdf:"training-systems-report.pdf" },
+  { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; the filtered corpus trains −0.27 nats lower (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-report.pdf" },
   { t:"Prompt Dominance and Asymmetric Verifier Costs in GRPO", d:"Prompt design, not the estimator, is the first-order variable at 1B scale; a 10%-flip verifier keeps 91%/106% of RL's attainable gain across two seeds where best-of-32 selection keeps only 57%.", img:"report-4.png", pdf:"grpo-report.pdf" },
   { t:"Instruction Tuning and Preference Optimization", d:"The same three models span 3.8–9.4% AlpacaEval win rate under three frontier judges but 26–33% under a local 8B judge; MMLU “gains” are mostly answer-format change.", img:"report-5.png", pdf:"sft-dpo-report.pdf" }
 ];
