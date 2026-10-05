@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rectified flow won at every budget — Yi Hou</title>
+<link rel="icon" type="image/png" href="../avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15.5px/1.75 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .wrap { max-width:700px; margin:0 auto; padding:30px 24px 56px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; }
+  .top .tag { color:var(--faint); letter-spacing:1px; text-transform:uppercase; font-size:11.5px; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23px; line-height:1.4; margin:30px 0 10px; letter-spacing:.1px; }
+  .meta { font-size:13.5px; color:var(--mut); font-style:italic; margin:0 0 28px; }
+  p { margin:0 0 15px; }
+  ul { margin:0 0 15px; padding-left:22px; }
+  li { margin-bottom:6px; }
+  code { background:#f4f6f8; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:13.5px; font-family:Consolas,Menlo,monospace; }
+  .foot { font-size:13.5px; color:var(--mut); border-top:1px solid var(--line); margin-top:28px; padding-top:16px; }
+  footer { max-width:700px; margin:0 auto; padding:0 24px 36px; font-size:12.5px; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../index.html">← Yi Hou</a>
+    <span class="tag">Notes · 2026.10</span>
+  </div>
+
+  <h1>Rectified flow won at every budget</h1>
+  <p class="meta">Notes from <a href="https://github.com/Helios-YQH/diffusion-from-scratch">diffusion-from-scratch</a> — DDPM/DDIM, DiT, and rectified flow implemented without diffusers.</p>
+
+  <p>The experiment is a 2×2 on MNIST — {UNet, DiT} × {ε-prediction, rectified flow} — 200 epochs each under one protocol (same optimizer, schedule, batch size, seed). One disclosure up front: the transformer has more parameters (16.5M vs 11.7M) but 44% of the UNet's FLOPs — the comparison is not compute-matched, and the FLOPs column exists to make that visible rather than to hide it.</p>
+
+  <p><b>What happened:</b></p>
+  <ul>
+    <li>Rectified flow beats ε-prediction in both backbones, at every budget: best FIDs of <b>0.88</b> (UNet, 64 Euler steps) against 2.79 (UNet, 1,000 ancestral steps), and 4.99 against 33.18 in the transformer.</li>
+    <li>A separate sampler study on one trained CelebA UNet (174M parameters, nothing retrained): DDIM at 50 steps lands <b>within 0.8%</b> of the 1,000-step ancestral FID — 11.45 vs 11.37 — at 20× the speed (39 vs 1.9 samples/s).</li>
+    <li>The surprise is in that same study. DDIM <i>improves</i> the UNet as the budget grows (FID 22.06 → 4.32 from 10 to 50 steps) but <i>collapses</i> the DiT (49.14 → 672.39), while ancestral sampling of those same DiT weights gives 33.18. Controls rule out the weights (raw weights fail the same way), the model (ancestral works), and the implementation (the same sampler improves the UNet). Raising DDIM's η from 0 to 1 at a fixed 50 evaluations moves the fraction of saturated pixels from 0.48 to 0.79 and turns saturated blobs back into digits — the deterministic update accumulates the model's score error in one direction, and each ancestral step re-injects noise that bounds the drift.</li>
+    <li>And a precision trap: a bf16 retrain matched the fp32 training loss to three digits while <i>doubling</i> the 1,000-step FID (5.56 vs 2.79); the 50-step FID was unchanged. Loss parity is not sample parity.</li>
+  </ul>
+
+  <p><b>The takeaway.</b> At this scale — one seed, MNIST and a single CelebA model — flow dominated at every budget I tested; that does not transfer without re-measuring, especially off compute-matched ground. And pick your training precision with the sampler, not the loss curve.</p>
+
+  <p class="foot"><i>Caveats: single seed per cell; the DDIM inversion is characterized, not fully explained. Reports, code, and the raw per-run results: <a href="https://github.com/Helios-YQH/diffusion-from-scratch">diffusion-from-scratch</a>.</i></p>
+</div>
+<footer>© 2026 Yi Hou · <a href="../index.html">helios-yqh.github.io</a></footer>
+</body>
+</html>

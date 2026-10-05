@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The judge outweighs the model — Yi Hou</title>
+<link rel="icon" type="image/png" href="../avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15.5px/1.75 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .wrap { max-width:700px; margin:0 auto; padding:30px 24px 56px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; }
+  .top .tag { color:var(--faint); letter-spacing:1px; text-transform:uppercase; font-size:11.5px; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23px; line-height:1.4; margin:30px 0 10px; letter-spacing:.1px; }
+  .meta { font-size:13.5px; color:var(--mut); font-style:italic; margin:0 0 28px; }
+  p { margin:0 0 15px; }
+  ul { margin:0 0 15px; padding-left:22px; }
+  li { margin-bottom:6px; }
+  code { background:#f4f6f8; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:13.5px; font-family:Consolas,Menlo,monospace; }
+  .foot { font-size:13.5px; color:var(--mut); border-top:1px solid var(--line); margin-top:28px; padding-top:16px; }
+  footer { max-width:700px; margin:0 auto; padding:0 24px 36px; font-size:12.5px; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../index.html">← Yi Hou</a>
+    <span class="tag">Notes · 2026.10</span>
+  </div>
+
+  <h1>The judge outweighs the model</h1>
+  <p class="meta">Notes from <a href="../sft-dpo-report.pdf">Instruction Tuning and Preference Optimization</a> — an 8B SFT + DPO study in which the evaluation harness is part of the experiment.</p>
+
+  <p>I fine-tuned Llama-3.1-8B in two LoRA stages — supervised instruction tuning on 228,743 examples, then DPO on 49,326 human preference pairs — and evaluated every stage on MMLU, GSM8K, AlpacaEval, and SimpleSafetyTests. Then I re-scored the same outputs with different judges. That is where the interesting numbers are.</p>
+
+  <p><b>The judge study.</b> The same 805 AlpacaEval predictions were scored by four judges: three frontier APIs (GPT-5.6-luna, DeepSeek-V4.1-Flash, Qwen3.8-Flash) and the SFT model itself, served locally as an 8B judge. Every pair was judged twice, once in each presentation order, and the two averaged.</p>
+
+  <ul>
+    <li>The same three models span <b>3.8–9.4%</b> raw win rate under the frontier judges and <b>26–33%</b> under the local 8B judge. Nothing about the models changed; the instrument did.</li>
+    <li>The three frontier judges agree on the ranking — SFT first, SFT+DPO just above base, by margins of 0.1–0.3 points. The local judge flips that close pair outright: base 31.9% against SFT+DPO 26.3%.</li>
+    <li>Position bias scales inversely with judge capability: 0.98–1.80× for the frontier judges, <b>9.7–24.6×</b> for the local one. It is partly reading presentation order, not content.</li>
+    <li>On safety (SimpleSafetyTests, n = 100) the frontier judges see a small SFT improvement — 11–15% unsafe down to 9–10% — with DPO giving most of it back. The local judge calls <b>every answer from every model safe</b>. A judge that never says "unsafe" cannot measure safety.</li>
+  </ul>
+
+  <p><b>The metric that moved wasn't the capability.</b> Instruction tuning shows an apparent <b>+7.0 points on MMLU</b> — but the base model fails to produce a parseable answer on 9.8% of items under the fine-tuned template, the fine-tuned model fails on none, and its answers shrink from 353 to 27 characters. Most of the "knowledge gain" is format compliance. The same brevity costs 4.5 points on GSM8K, where the dropped text was the reasoning. DPO partly restores it — GSM8K back above base, 19.6% → 22.1%, answers back to 324 characters — though whether that is capability recovery or length restoration is not separable from these numbers.</p>
+
+  <p><b>The takeaway.</b> A winrate without a named judge is not a number. Before believing a delta, measure the instrument: swap the presentation order, add a second judge from a different family, and apply the length control — which narrows every gap here without reordering any model.</p>
+
+  <p class="foot"><i>Caveats: MMLU is 285 items and resolves about 3 points — the size of several effects discussed; the frontier judges are API models whose exact checkpoints I don't control; the AlpacaEval reference answers are GPT-4 Turbo's; and the safety set is 100 prompts, enough to detect a collapse, not to rank models. Full report, code, the judge harness, and the complete experiment records: <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>.</i></p>
+</div>
+<footer>© 2026 Yi Hou · <a href="../index.html">helios-yqh.github.io</a></footer>
+</body>
+</html>

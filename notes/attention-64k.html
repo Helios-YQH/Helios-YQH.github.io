@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5.7× at 64K: writing FlashAttention-2 in Triton — Yi Hou</title>
+<link rel="icon" type="image/png" href="../avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15.5px/1.75 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .wrap { max-width:700px; margin:0 auto; padding:30px 24px 56px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; }
+  .top .tag { color:var(--faint); letter-spacing:1px; text-transform:uppercase; font-size:11.5px; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23px; line-height:1.4; margin:30px 0 10px; letter-spacing:.1px; }
+  .meta { font-size:13.5px; color:var(--mut); font-style:italic; margin:0 0 28px; }
+  p { margin:0 0 15px; }
+  ul { margin:0 0 15px; padding-left:22px; }
+  li { margin-bottom:6px; }
+  code { background:#f4f6f8; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:13.5px; font-family:Consolas,Menlo,monospace; }
+  .foot { font-size:13.5px; color:var(--mut); border-top:1px solid var(--line); margin-top:28px; padding-top:16px; }
+  footer { max-width:700px; margin:0 auto; padding:0 24px 36px; font-size:12.5px; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../index.html">← Yi Hou</a>
+    <span class="tag">Notes · 2026.10</span>
+  </div>
+
+  <h1>5.7× at 64K: writing FlashAttention-2 in Triton</h1>
+  <p class="meta">Notes from <a href="../training-systems-report.pdf">Where the Time and Memory Go</a> — systems measurements on single and multi-GPU A6000 boxes, driven by a profiling pass over 128M–3.4B-parameter models.</p>
+
+  <p>The profiling set the agenda before any kernel was written. Two facts stood out: attention's softmax is 51× cheaper than matmul in FLOPs yet costs comparable time, and the T×T score matrix is the single largest memory consumer in the step. So attention got a from-scratch FlashAttention-2: a naive PyTorch reference, a Triton forward with online softmax, and a Triton two-pass backward that recomputes the scores and needs no atomics.</p>
+
+  <p><b>What it bought:</b></p>
+  <ul>
+    <li>Sweeping 128 → 65,536 tokens (head dim 64, batch 1, causal, one A6000): at 64K in bf16, flash is <b>5.7× faster end-to-end</b> (forward + backward). In fp32 at the same length, naive attention runs out of memory while flash completes.</li>
+    <li>An Nsight Systems trace at 2,048 tokens shows where it comes from. Naive attention: 314 kernels, 4.82 ms, with elementwise operations at 50% of GPU time, softmax at 19%, and the three matmuls at 28%. Flash: 105 kernels, 2.65 ms, 95% of it in three purpose-written kernels. The speedup is fusion, avoided HBM round-trips for the score matrix, and fewer launches.</li>
+    <li>Two honest caveats: time still scales O(S²) — flash saves memory, not computation — and the backward pass recomputes the scores twice, costing ~3.5× the forward.</li>
+  </ul>
+
+  <p><b>From writing the kernels.</b> <code>tl.dot</code> requires both operands in the same dtype, so the bf16 path casts the probability tile explicitly; at head dimension 128 the backward kernel exceeds the shared-memory budget and needs smaller tiles with <code>num_stages=1</code>; and a two-pass backward that recomputes the scores twice beats a one-pass formulation with atomics.</p>
+
+  <p><b>The rest of the stack, same report.</b> BF16 autocast: 1.8–3.2× on forward passes. Gradient checkpointing: 0.37× peak memory at ~2× compute — with the trap that checkpointing <i>everything</i> at once is <i>worse</i> than not checkpointing (1.14×), because the backward pass materializes every block's residuals simultaneously; block size 1 is optimal here. DDP with overlap: communication share 69% → 59% on 4 GPUs — and flattening the collectives changed nothing (790 vs 788 ms/step), because the cost is the bytes moved, not the number of calls. ZeRO-1: −23.7% step memory for +14.2% step time, not the naive 50% — only the optimizer state is sharded. FSDP: −43% steady-state memory, within 14% of PyTorch's own FSDP.</p>
+
+  <p><b>The takeaway.</b> Matmul holds over 60% of a forward pass's FLOPs but under 30% of a step's kernel time — follow time and byte traffic, not operation counts. And every optimization moves the bottleneck rather than removing it: activations cap context length, optimizer state caps batch size per replica, communication caps device count.</p>
+
+  <p class="foot"><i>Caveats: the headline attention sweep is single-GPU, head dimension 64, batch 1; the distributed numbers are small multi-GPU runs, not a cluster. Full report and code: <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>.</i></p>
+</div>
+<footer>© 2026 Yi Hou · <a href="../index.html">helios-yqh.github.io</a></footer>
+</body>
+</html>

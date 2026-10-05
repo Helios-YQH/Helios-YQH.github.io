@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The cosine tail hides divergence — Yi Hou</title>
+<link rel="icon" type="image/png" href="../avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15.5px/1.75 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .wrap { max-width:700px; margin:0 auto; padding:30px 24px 56px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; }
+  .top .tag { color:var(--faint); letter-spacing:1px; text-transform:uppercase; font-size:11.5px; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23px; line-height:1.4; margin:30px 0 10px; letter-spacing:.1px; }
+  .meta { font-size:13.5px; color:var(--mut); font-style:italic; margin:0 0 28px; }
+  p { margin:0 0 15px; }
+  ul { margin:0 0 15px; padding-left:22px; }
+  li { margin-bottom:6px; }
+  code { background:#f4f6f8; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:13.5px; font-family:Consolas,Menlo,monospace; }
+  .foot { font-size:13.5px; color:var(--mut); border-top:1px solid var(--line); margin-top:28px; padding-top:16px; }
+  footer { max-width:700px; margin:0 auto; padding:0 24px 36px; font-size:12.5px; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../index.html">← Yi Hou</a>
+    <span class="tag">Notes · 2026.10</span>
+  </div>
+
+  <h1>The cosine tail hides divergence: a run that explodes and recovers</h1>
+  <p class="meta">Notes from <a href="../transformer-lm-report.pdf">A Transformer Language Model From Scratch</a> — a 22.7M-parameter model and one deliberately aggressive learning-rate sweep.</p>
+
+  <p>The recipe is standard: linear warmup, then cosine decay to 10⁻⁵. For this setup the optimal learning rate is 3×10⁻³ at batch size 64 (2×10⁻³ at 256). I extended the sweep upward to 3.0 — a thousand times the optimum — running each with the same 1,000-step schedule and recording the final validation loss.</p>
+
+  <p><b>What happened:</b></p>
+  <ul>
+    <li>The final losses rise monotonically across the extended sweep — 3.33, 3.96, 4.07, 4.05, 4.78, 5.20, 6.21 from 2×10⁻² to 3.0 — and <b>not one of the runs ends in NaN</b>. Read only that column and you would conclude this model tolerates a thousandfold learning rate.</li>
+    <li>The trajectories say otherwise. At lr 1.0 the loss peaks around 400 at step 300; at 3.0, around 6,000. Both then descend by orders of magnitude as the cosine tail anneals the learning rate back down. The divergence is real; the final number hides it, because the schedule guarantees every run ends at a tiny learning rate.</li>
+    <li>The control settles it: the 0.5 run, rerun with the schedule flattened (constant rate after warmup), never recovers — after the same step-300 explosion it swings between single digits and 470 and ends at 88, two orders of magnitude above anything the annealing schedules produce.</li>
+    <li>So the divergence threshold here is around 0.5 (≈170× the optimum), and it has to be read off the trajectory — a final-loss table gets this exactly backwards.</li>
+    <li>One more thing the same report shows: the threshold is a property of the whole recipe, not the learning rate. Removing RMSNorm and changing nothing else breaks training at the <i>optimal</i> learning rate — loss ~9.2 by step 80, NaN by step 240.</li>
+  </ul>
+
+  <p><b>The takeaway.</b> Don't compare runs by final loss across different schedules — a cosine tail is a very effective broom. Plot validation curves on a log scale, and when an ablation seems to recover, look at the middle of the run before believing it.</p>
+
+  <p>For calibration, the main run: 22.7M parameters, batch 256, lr 2×10⁻³, 5,000 steps — 327.7M tokens in 1.5 hours on one A6000 — reaching 1.57 validation loss. That is short of the track's 1.45 reference target; the gap is budget, not a bug (the schedule ends while the loss is still descending), and the comparisons above are the point of the setup rather than the absolute number.</p>
+
+  <p class="foot"><i>Caveats: validation loss is itself a random quantity at the 10⁻³ level (mean over 10 batches; no error bars), and run-to-run noise without a fixed seed is ~0.06 nats. Full report and code: <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>.</i></p>
+</div>
+<footer>© 2026 Yi Hou · <a href="../index.html">helios-yqh.github.io</a></footer>
+</body>
+</html>

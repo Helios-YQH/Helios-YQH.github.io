@@ -190,6 +190,11 @@
     <section id="notes">
       <h2>Notes</h2>
       <div class="proj"><b>A verifier that's wrong 10% of the time: RL shrugs, best-of-N doesn't</b><div class="d">The same verifier noise that barely dents GRPO training — 91–106% of attainable gain kept at a 10% flip rate — cuts best-of-32 selection to 57%. Why the asymmetry is structural rather than incidental.</div><div class="l"><a href="notes/verifier-asymmetry.html">Read the note →</a></div></div>
+      <div class="proj"><b>The judge outweighs the model</b><div class="d">The same 805 AlpacaEval predictions span 3.8–9.4% or 26–33% win rate depending on who judges — the local 8B judge even flips the ranking. And MMLU's apparent "+7 points" is mostly answer format.</div><div class="l"><a href="notes/judge-outweighs-the-model.html">Read the note →</a></div></div>
+      <div class="proj"><b>5.7× at 64K: writing FlashAttention-2 in Triton</b><div class="d">A from-scratch Triton FA2, attributed kernel by kernel with Nsight — plus the rest of the stack: DDP overlap, ZeRO-1, FSDP, and the checkpointing trap.</div><div class="l"><a href="notes/attention-64k.html">Read the note →</a></div></div>
+      <div class="proj"><b>The cosine tail hides divergence</b><div class="d">A thousandfold learning rate, no NaNs — the cosine tail anneals even a diverged run (loss ~6,000 mid-run) back to a healthy-looking final number. The constant-LR control never recovers.</div><div class="l"><a href="notes/cosine-tail.html">Read the note →</a></div></div>
+      <div class="proj"><b>What a crawl filter actually removes</b><div class="d">2.14M Common Crawl documents → 9.3% kept → 340M tokens. An audit of what each filter really drops (and what it misses), plus −0.27 nats of evidence that filtering helps the model.</div><div class="l"><a href="notes/crawl-filter.html">Read the note →</a></div></div>
+      <div class="proj"><b>Rectified flow won at every budget</b><div class="d">Flow beats ε-prediction in both backbones at every budget; DDIM collapses the DiT while improving the UNet; and bf16 matches the training loss but doubles the FID.</div><div class="l"><a href="notes/rectified-flow.html">Read the note →</a></div></div>
     </section>
 
     <section id="other">

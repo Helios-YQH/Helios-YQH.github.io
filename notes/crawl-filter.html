@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What a crawl filter actually removes — Yi Hou</title>
+<link rel="icon" type="image/png" href="../avatar.png">
+<style>
+  :root { --navy:#17416b; --ink:#2a2f36; --mut:#667085; --faint:#98a2b3; --line:#e5e9ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#fff; color:var(--ink); font:15.5px/1.75 "Segoe UI",-apple-system,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif; }
+  a { color:var(--navy); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  .wrap { max-width:700px; margin:0 auto; padding:30px 24px 56px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; font-size:13.5px; }
+  .top .tag { color:var(--faint); letter-spacing:1px; text-transform:uppercase; font-size:11.5px; font-variant-numeric:tabular-nums; }
+  h1 { font-size:23px; line-height:1.4; margin:30px 0 10px; letter-spacing:.1px; }
+  .meta { font-size:13.5px; color:var(--mut); font-style:italic; margin:0 0 28px; }
+  p { margin:0 0 15px; }
+  ul { margin:0 0 15px; padding-left:22px; }
+  li { margin-bottom:6px; }
+  code { background:#f4f6f8; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:13.5px; font-family:Consolas,Menlo,monospace; }
+  .foot { font-size:13.5px; color:var(--mut); border-top:1px solid var(--line); margin-top:28px; padding-top:16px; }
+  footer { max-width:700px; margin:0 auto; padding:0 24px 36px; font-size:12.5px; color:var(--faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a href="../index.html">← Yi Hou</a>
+    <span class="tag">Notes · 2026.10</span>
+  </div>
+
+  <h1>What a crawl filter actually removes: 2.14M documents in, 340M tokens out</h1>
+  <p class="meta">Notes from <a href="../data-pipeline-report.pdf">From Crawl to Corpus</a> — a Common Crawl filtering pipeline built from scratch and audited document by document.</p>
+
+  <p>The pipeline is the modern stack, implemented from scratch: HTML-to-text extraction with encoding detection → fastText language identification → regular-expression PII masking → Dolma's Jigsaw NSFW and hate-speech classifiers → the Gopher quality heuristics → a fastText quality classifier → exact line deduplication → MinHash+LSH document deduplication. Input: 100 WET shards, 2,135,796 documents, 6.2 GB.</p>
+
+  <p><b>The funnel, and what each stage really does:</b></p>
+  <ul>
+    <li>Language identification removes <b>70.3%</b> — only 30% of the raw shards are English. The single largest filter by far.</li>
+    <li>The quality classifier removes 16.8%; the Gopher heuristics 3.5%; the two safety classifiers together 0.05%.</li>
+    <li>Kept: 9.3% — 198,764 documents. Line deduplication then cuts <b>57.5% of the surviving lines</b> (navigation bars and footers are near-universal), and MinHash+LSH, run last, removes 52 more documents (0.03%). Almost all the redundancy is already gone by then; MinHash's value is on unfiltered corpora.</li>
+    <li>The audit is where the aggregate numbers break down. Of 25 raw WET records read before filtering, about half were machine-generated SEO, adult, or gambling pages, and roughly one in five resembled a genuine article. Then, reading kept and discarded samples with scores recomputed:</li>
+    <li>The safety classifiers are English-trained and nearly blind to everything else: sampled Chinese adult pages scored 0.920 and 0.915 against the 0.9 cutoff — barely over — and one page at 0.687 slipped under it, removed only because the second classifier also fired.</li>
+    <li>The Gopher rules are English-specific and punish the wrong things: whole CJK documents fail the mean-word-length test (a whitespace artifact, not a content signal), and WET's sidebar listings make good blog posts fail the alphabetic-word rule — all four sampled rejections failed on that rule with ratios of 54–72% while their prose was fine.</li>
+  </ul>
+
+  <p><b>Does filtering help the model?</b> A paired 4,000-step ablation — identical initial weights, identical validation batches — trains one model on the filtered corpus and one on a language-filter-only control. The filtered corpus reaches <b>0.27 nats lower</b> validation loss at the best checkpoint (5.64 vs 5.91; perplexity 282 vs 367), with the gap widening over training (0.20 → 0.358 nats) and well outside the run's own scatter (below 0.01 nats). Two facts belong attached to that number: the quality classifier's positives came from the benchmark's own validation bin, so part of the gain is agreement with that distribution; and the control saw three times more tokens, which works against the filtered arm — making 0.27 a lower bound on the effect of filtering itself. A telltale of what the control is doing with that extra data: its <i>training</i> loss drops below the filtered arm's from step 300 onward while its validation loss stays worse — the signature of memorizing redundant text.</p>
+
+  <p><b>The takeaway.</b> "Removes X%" is a necessary number, not a sufficient one — read what the filters drop. And evaluate a corpus by training on it.</p>
+
+  <p class="foot"><i>Scale: 100 shards, 6.2 GB, 2.14M documents; extrapolated to 2,500 shards, this pipeline yields ≈8.5B tokens in about 10 hours, mostly unattended. Full report and the measurement tables behind the ablation: <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a>.</i></p>
+</div>
+<footer>© 2026 Yi Hou · <a href="../index.html">helios-yqh.github.io</a></footer>
+</body>
+</html>
