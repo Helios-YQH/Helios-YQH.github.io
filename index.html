@@ -41,6 +41,7 @@
 
   .proj { margin:0 0 16px; }
   .proj b { font-size:15px; }
+  .proj b a { color:inherit; }
   .proj .d { color:#3d4451; font-size:14px; margin:1px 0 2px; }
   .proj .l { font-size:13px; }
 
@@ -161,9 +162,9 @@
 
     <section id="projects">
       <h2>Selected Projects</h2>
-      <div class="proj"><b>LLM from Scratch</b><div class="d">The full LLM stack in one monorepo — BPE → Transformer → Triton kernels → DDP / ZeRO-1 / FSDP → Common Crawl pipeline → SFT / DPO / GRPO. Five technical reports.</div><div class="l"><a href="https://github.com/Helios-YQH/llm-from-scratch">github.com/Helios-YQH/llm-from-scratch ↗</a></div></div>
-      <div class="proj"><b>Diffusion from Scratch</b><div class="d">UNet vs. DiT and ε-prediction vs. rectified flow, all measured: rectified flow won at every budget (best MNIST FID 0.88), and DDIM at 50 steps matches the 1,000-step ancestral FID within 0.8% at ~20× the speed.</div><div class="l"><a href="https://github.com/Helios-YQH/diffusion-from-scratch">github.com/Helios-YQH/diffusion-from-scratch ↗</a></div></div>
-      <div class="proj"><b>Point Cloud Denoising</b><div class="d">StraightPCF (CVPR 2024), solo re-implementation in Jittor — −51% Chamfer distance and −67% P2S error versus the noisy input; top 100 of 3,668 in the 6th Jittor AI Challenge.</div><div class="l"><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">github.com/Helios-YQH/jittor-competition-point-cloud ↗</a></div></div>
+      <div class="proj"><b><a href="https://github.com/Helios-YQH/llm-from-scratch">LLM from Scratch</a></b><div class="d">The full LLM stack in one monorepo — BPE → Transformer → Triton kernels → DDP / ZeRO-1 / FSDP → Common Crawl pipeline → SFT / DPO / GRPO. Five technical reports.</div><div class="l"><a href="https://github.com/Helios-YQH/llm-from-scratch">github.com/Helios-YQH/llm-from-scratch ↗</a></div></div>
+      <div class="proj"><b><a href="https://github.com/Helios-YQH/diffusion-from-scratch">Diffusion from Scratch</a></b><div class="d">UNet vs. DiT and ε-prediction vs. rectified flow, all measured: rectified flow won at every budget (best MNIST FID 0.88), and DDIM at 50 steps matches the 1,000-step ancestral FID within 0.8% at ~20× the speed.</div><div class="l"><a href="https://github.com/Helios-YQH/diffusion-from-scratch">github.com/Helios-YQH/diffusion-from-scratch ↗</a></div></div>
+      <div class="proj"><b><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">Point Cloud Denoising</a></b><div class="d">StraightPCF (CVPR 2024), solo re-implementation in Jittor — −51% Chamfer distance and −67% P2S error versus the noisy input; top 100 of 3,668 in the 6th Jittor AI Challenge.</div><div class="l"><a href="https://github.com/Helios-YQH/jittor-competition-point-cloud">github.com/Helios-YQH/jittor-competition-point-cloud ↗</a></div></div>
     </section>
 
     <section id="reports">
@@ -189,17 +190,17 @@
 
     <section id="notes">
       <h2>Notes</h2>
-      <div class="proj"><b>A verifier that's wrong 10% of the time: RL shrugs, best-of-N doesn't</b><div class="d">The same verifier noise that barely dents GRPO training — 91–106% of attainable gain kept at a 10% flip rate — cuts best-of-32 selection to 57%. Why the asymmetry is structural rather than incidental.</div><div class="l"><a href="notes/verifier-asymmetry.html">Read the note →</a></div></div>
-      <div class="proj"><b>The judge outweighs the model</b><div class="d">The same 805 AlpacaEval predictions span 3.8–9.4% or 26–33% win rate depending on who judges — the local 8B judge even flips the ranking. And MMLU's apparent "+7 points" is mostly answer format.</div><div class="l"><a href="notes/judge-outweighs-the-model.html">Read the note →</a></div></div>
-      <div class="proj"><b>5.7× at 64K: writing FlashAttention-2 in Triton</b><div class="d">A from-scratch Triton FA2, attributed kernel by kernel with Nsight — plus the rest of the stack: DDP overlap, ZeRO-1, FSDP, and the checkpointing trap.</div><div class="l"><a href="notes/attention-64k.html">Read the note →</a></div></div>
-      <div class="proj"><b>The cosine tail hides divergence</b><div class="d">A thousandfold learning rate, no NaNs — the cosine tail anneals even a diverged run (loss ~6,000 mid-run) back to a healthy-looking final number. The constant-LR control never recovers.</div><div class="l"><a href="notes/cosine-tail.html">Read the note →</a></div></div>
-      <div class="proj"><b>What a crawl filter actually removes</b><div class="d">2.14M Common Crawl documents → 9.3% kept → 340M tokens. An audit of what each filter really drops (and what it misses), plus −0.27 nats of evidence that filtering helps the model.</div><div class="l"><a href="notes/crawl-filter.html">Read the note →</a></div></div>
-      <div class="proj"><b>Rectified flow won at every budget</b><div class="d">Flow beats ε-prediction in both backbones at every budget; DDIM collapses the DiT while improving the UNet; and bf16 matches the training loss but doubles the FID.</div><div class="l"><a href="notes/rectified-flow.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/verifier-asymmetry.html">A verifier that's wrong 10% of the time: RL shrugs, best-of-N doesn't</a></b><div class="d">The same verifier noise that barely dents GRPO training — 91–106% of attainable gain kept at a 10% flip rate — cuts best-of-32 selection to 57%. Why the asymmetry is structural rather than incidental.</div><div class="l"><a href="notes/verifier-asymmetry.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/judge-outweighs-the-model.html">The judge outweighs the model</a></b><div class="d">The same 805 AlpacaEval predictions span 3.8–9.4% or 26–33% win rate depending on who judges — the local 8B judge even flips the ranking. And MMLU's apparent "+7 points" is mostly answer format.</div><div class="l"><a href="notes/judge-outweighs-the-model.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/attention-64k.html">5.7× at 64K: writing FlashAttention-2 in Triton</a></b><div class="d">A from-scratch Triton FA2, attributed kernel by kernel with Nsight — plus the rest of the stack: DDP overlap, ZeRO-1, FSDP, and the checkpointing trap.</div><div class="l"><a href="notes/attention-64k.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/cosine-tail.html">The cosine tail hides divergence</a></b><div class="d">A thousandfold learning rate, no NaNs — the cosine tail anneals even a diverged run (loss ~6,000 mid-run) back to a healthy-looking final number. The constant-LR control never recovers.</div><div class="l"><a href="notes/cosine-tail.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/crawl-filter.html">What a crawl filter actually removes</a></b><div class="d">2.14M Common Crawl documents → 9.3% kept → 340M tokens. An audit of what each filter really drops (and what it misses), plus −0.27 nats of evidence that filtering helps the model.</div><div class="l"><a href="notes/crawl-filter.html">Read the note →</a></div></div>
+      <div class="proj"><b><a href="notes/rectified-flow.html">Rectified flow won at every budget</a></b><div class="d">Flow beats ε-prediction in both backbones at every budget; DDIM collapses the DiT while improving the UNet; and bf16 matches the training loss but doubles the FID.</div><div class="l"><a href="notes/rectified-flow.html">Read the note →</a></div></div>
     </section>
 
     <section id="other">
       <h2>Other Projects</h2>
-      <div class="proj"><b>lab-report</b><div class="d">An agent skill (Claude Code) that automates the full loop from photos of handwritten lab records to a finished physics-lab report — verified transcription, uncertainty-corrected calculations and plots, and a Typst-compiled PDF. Open source.</div><div class="l"><a href="https://github.com/Helios-YQH/lab-report">github.com/Helios-YQH/lab-report ↗</a></div></div>
+      <div class="proj"><b><a href="https://github.com/Helios-YQH/lab-report">lab-report</a></b><div class="d">An agent skill (Claude Code) that automates the full loop from photos of handwritten lab records to a finished physics-lab report — verified transcription, uncertainty-corrected calculations and plots, and a Typst-compiled PDF. Open source.</div><div class="l"><a href="https://github.com/Helios-YQH/lab-report">github.com/Helios-YQH/lab-report ↗</a></div></div>
       <div class="proj"><b>ZhiyanNavigator</b><div class="d">Backend for an LLM-powered paper-learning assistant built for the 2026 China International College Students' Innovation Competition — paper ingestion, proficiency assessment, study roadmap, card-by-card explanations, and self-check quizzes.</div></div>
     </section>
 
