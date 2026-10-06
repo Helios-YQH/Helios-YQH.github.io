@@ -32,7 +32,7 @@
   </div>
 
   <h1>A verifier that's wrong 10% of the time: RL shrugs, best-of-N doesn't</h1>
-  <p class="meta">Notes on a controlled experiment from <a href="../grpo-report.pdf">Prompt Dominance and Asymmetric Verifier Costs</a> — a from-scratch GRPO study at 1B scale.</p>
+  <p class="meta">Notes on a controlled experiment from <a href="../grpo-report.pdf">Prompt Dominance and Asymmetric Verifier Costs</a> — a from-scratch GRPO study at 1B scale, now on arXiv (<a href="https://arxiv.org/abs/2610.04928">2610.04928</a>).</p>
 
   <p>When you train a language model against a reward verifier — a script that checks whether the final answer is right — the same verifier usually does two jobs. It provides the training reward, and at test time it picks which of N sampled answers to submit. These two jobs are usually studied separately. I wanted them side by side, under exactly the same amount of verifier damage.</p>
 

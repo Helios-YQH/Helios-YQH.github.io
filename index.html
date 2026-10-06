@@ -66,6 +66,7 @@
   .btn:hover { background:#123255; text-decoration:none; }
   .btn.ghost { background:#fff; color:var(--navy); border:1px solid var(--navy); }
   .btn.ghost:hover { background:#eef3f9; text-decoration:none; }
+  .btn[hidden] { display:none; }
   .panel .actions { display:flex; gap:8px; }
   .panel a.img-link { display:block; }
 
@@ -127,7 +128,7 @@
     <section id="about">
       <p>I'm Yi Hou (厚熠), a second-year Artificial Intelligence undergraduate at UCAS. I build language-model systems from scratch and report what the measurements say.</p>
       <p>I came in through computer vision — a solo top-100 finish (of 3,668 registrations) in the 6th Jittor AI Challenge — then went down the stack through diffusion models, and now work across the full LLM pipeline: byte-level BPE, a decoder-only Transformer, Triton attention kernels, DDP / ZeRO-1 / FSDP, a Common Crawl filtering pipeline, and post-training with SFT / DPO / GRPO.</p>
-      <p>It's all public as <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a> — four projects, five technical reports — and I only publish numbers I can regenerate from the raw run logs.</p>
+      <p>It's all public as <a href="https://github.com/Helios-YQH/llm-from-scratch">llm-from-scratch</a> — four projects, five technical reports, one now an <a href="https://arxiv.org/abs/2610.04928">arXiv preprint</a> — and I only publish numbers I can regenerate from the raw run logs.</p>
     </section>
 
     <section id="results">
@@ -154,6 +155,7 @@
     <section id="news">
       <h2>News</h2>
       <ul class="news">
+        <li><span class="date">2026.10</span>The GRPO study is on arXiv — <a href="https://arxiv.org/abs/2610.04928">Prompt Dominance and Asymmetric Verifier Costs (arXiv:2610.04928)</a>.</li>
         <li><span class="date">2026.10</span>Technical reports v1.0 released — five PDFs in the llm-from-scratch monorepo.</li>
         <li><span class="date">2026.04–07</span>Top 100 of 3,668 registrations in the 6th Jittor AI Challenge (solo, point-cloud denoising).</li>
         <li><span class="date">2025.09</span>Started B.Eng. in Artificial Intelligence at UCAS.</li>
@@ -183,6 +185,7 @@
           <div class="actions">
             <a class="btn" id="preview-open" href="training-systems-report.pdf" target="_blank">View PDF ↗</a>
             <a class="btn ghost" id="preview-download" href="training-systems-report.pdf" download>Download</a>
+            <a class="btn ghost" id="preview-arxiv" href="https://arxiv.org/abs/2610.04928" target="_blank" hidden>arXiv ↗</a>
           </div>
         </div>
       </div>
@@ -225,7 +228,7 @@ const REPORTS = [
   { t:"A Transformer Language Model From Scratch", d:"22.7M-parameter decoder-only Transformer to 1.57 val loss in 1.5 GPU-hours; bit-exact BPE; ablations include a cosine LR tail that can mask divergence.", img:"report-1.png", pdf:"transformer-lm-report.pdf" },
   { t:"Where the Time and Memory Go", d:"5.7× attention speedup at 64K context (Triton FA2); −43% memory from a from-scratch FSDP; Nsight profiles across 128M–3.4B-parameter models.", img:"report-2.png", pdf:"training-systems-report.pdf" },
   { t:"From Crawl to Corpus", d:"2.14M documents → 340M GPT-2 tokens; the filtered corpus trains −0.27 nats lower (perplexity 282 vs 367).", img:"report-3.png", pdf:"data-pipeline-report.pdf" },
-  { t:"Prompt Dominance and Asymmetric Verifier Costs in GRPO", d:"Prompt design, not the estimator, is the first-order variable at 1B scale; a 10%-flip verifier keeps 91%/106% of RL's attainable gain across two seeds where best-of-32 selection keeps only 57%.", img:"report-4.png", pdf:"grpo-report.pdf" },
+  { t:"Prompt Dominance and Asymmetric Verifier Costs in GRPO", d:"Prompt design, not the estimator, is the first-order variable at 1B scale; a 10%-flip verifier keeps 91%/106% of RL's attainable gain across two seeds where best-of-32 selection keeps only 57%.", img:"report-4.png", arxiv:"https://arxiv.org/abs/2610.04928", pdf:"grpo-report.pdf" },
   { t:"Instruction Tuning and Preference Optimization", d:"The same three models span 3.8–9.4% AlpacaEval win rate under three frontier judges but 26–33% under a local 8B judge; MMLU “gains” are mostly answer-format change.", img:"report-5.png", pdf:"sft-dpo-report.pdf" }
 ];
 document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click", () => {
@@ -240,6 +243,8 @@ document.querySelectorAll("#rlist li").forEach(li => li.addEventListener("click"
   document.getElementById("preview-view").href = r.pdf;
   document.getElementById("preview-open").href = r.pdf;
   document.getElementById("preview-download").href = r.pdf;
+  const ax = document.getElementById("preview-arxiv");
+  if (r.arxiv) { ax.href = r.arxiv; ax.hidden = false; } else { ax.hidden = true; }
 }));
 </script>
 </body>
